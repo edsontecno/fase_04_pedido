@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+spec:
+  replicas: 2  # Quantidade de réplicas da aplicação
+  selector:
+    matchLabels:
+      app: backend-app  # Seleciona pods com essa label
+  template:
+    metadata:
+      labels:
+        app: backend-app  # Associa esse label ao pod criado
+    spec:
+      containers:
+      - name: backend-app
+        image: edsontecno/clean-architecture-nestjs-backend:latest  # Imagem do Node.js 
+        ports:
+        - containerPort: 3000  # Porta exposta pela aplicação
+        resources:
+          requests:   # Recursos mínimos para cada pod
+            memory: "512Mi"
+            cpu: "500m"
+          limits:     # Limites máximos para cada pod
+            memory: "1024Mi"
+            cpu: "1"        
+        env:
+        - name: SERVER_PORT
+          value: "3000"  # Porta do servidor
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: host  
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: username  
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
+        - name: DB_NAME
+          value: postgres
+        - name: DB_ADMIN_EMAIL
+          value: admin@root.com
+        - name: NODE_ENV
+          value: production
+        - name: WEBHOOK_MP
+          value: https://b12e46nbsl.execute-api.us-east-1.amazonaws.com/dev/public/payment
+        - name: PAYER_MP
+          value: gabriel.f.lazari@gmail.com    
+        - name: ACCESS_TOKEN_MP
+          value: TEST-2282551978833497-100320-c82d058610e7b085af78d1551645b98f-676499050  
