@@ -6,11 +6,13 @@ import { OrderProcess } from '../entities/OrderProcess';
 import { OrderStatus } from '../entities/OrderStatus';
 import { IOrderData } from '../interfaces/IOrderData';
 import { OrderUseCase } from './OrderUseCase';
+import { ProductUseCase } from '../../../application/product/ProductUseCase';
 
 describe('OrderUseCase', () => {
   let useCase: OrderUseCase;
   let persistMock: Partial<IOrderData>;
   let configServiceMock: Partial<ConfigService>;
+  let productServiceMock: Partial<ProductUseCase>;
 
   beforeEach(async () => {
     persistMock = {
@@ -20,9 +22,9 @@ describe('OrderUseCase', () => {
       changeStatus: jest.fn(),
     };
 
-    // productServiceMock = {
-    //   get: jest.fn(),
-    // };
+    productServiceMock = {
+      getProductById: jest.fn(),
+    };
 
     // customerUseCaseMock = {
     //   getCustomer: jest.fn(),
@@ -38,6 +40,7 @@ describe('OrderUseCase', () => {
         OrderUseCase,
         { provide: IOrderData, useValue: persistMock },
         { provide: ConfigService, useValue: configServiceMock },
+        { provide: ProductUseCase, useValue: productServiceMock },
       ],
     }).compile();
 
@@ -131,18 +134,16 @@ describe('OrderUseCase', () => {
         qr_code: '',
       };
       const orderProcess = new OrderProcess();
-      // const product = {
-      //   id: 1,
-      //   name: 'Coca-Cola',
-      //   price: 5.99,
-      // };
+      const product = { id: 1, price: 10.0 };
 
-      // (productServiceMock.get as jest.Mock).mockResolvedValue(product);
+      (productServiceMock.getProductById as jest.Mock).mockResolvedValue(
+        product,
+      );
 
       await useCase['prepareItems'](order, orderProcess);
 
       expect(orderProcess.items.length).toBe(1);
-      expect(orderProcess.total).toBe(20.2);
+      expect(orderProcess.total).toBe(20);
     });
 
     it('should throw an error if product ID is missing', async () => {

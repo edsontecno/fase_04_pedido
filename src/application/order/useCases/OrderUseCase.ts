@@ -9,11 +9,13 @@ import { IOrderUseCase } from '../interfaces/IOrderUseCase';
 import { OrderItem } from '../entities/OrderItems';
 import { decryptObject } from '../../../application/utils/crypto';
 import { ConfigService } from '@nestjs/config';
+import { ProductUseCase } from '../../../application/product/ProductUseCase';
 
 @Injectable()
 export class OrderUseCase implements IOrderUseCase {
   constructor(
     private persist: IOrderData,
+    private productUseCase: ProductUseCase,
     private configService: ConfigService,
   ) {}
 
@@ -26,7 +28,7 @@ export class OrderUseCase implements IOrderUseCase {
       // let customer = await this.customerUseCase.getCustomer(
       //   userDecryto.user_name,
       // );
-      console.log(userDecryto);
+      // console.log(userDecryto);
       if (userDecryto !== null) {
         // if (customer.id === undefined) {
         //   const newCustomer = new Customer();
@@ -58,9 +60,9 @@ export class OrderUseCase implements IOrderUseCase {
         throw new BusinessRuleException('Por favor informe o produto desejado');
       }
 
-      //TODO REFAZER
-      //const product = element.productId;
-      const product = { id: 1, price: 10.1 };
+      const product = await this.productUseCase.getProductById(
+        element.productId,
+      );
 
       if (product.id === undefined) {
         throw new BusinessRuleException(

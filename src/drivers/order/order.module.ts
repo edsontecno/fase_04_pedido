@@ -9,6 +9,7 @@ import { OrderEntity } from '../../adapters/order/gateway/Order.entity';
 import { OrderItemEntity } from '../../adapters/order/gateway/OrderItem.entity';
 import { OrderController } from './order.controller';
 import { OrderPresenter } from 'src/adapters/order/presenter/OrderPresenter';
+import { ProductUseCase } from 'src/application/product/ProductUseCase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([OrderEntity, OrderItemEntity])],
@@ -29,6 +30,10 @@ import { OrderPresenter } from 'src/adapters/order/presenter/OrderPresenter';
     {
       provide: IOrderUseCase,
       useClass: OrderUseCase,
+    },
+    {
+      provide: ProductUseCase,
+      useClass: ProductUseCase,
     },
   ],
   exports: [

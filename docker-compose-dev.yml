@@ -42,9 +42,51 @@ services:
       - fiap
     restart: unless-stopped
 
+  dominio:
+    image: node:18
+    container_name: dominio
+    volumes:
+      - ../dominio/:/app
+      - type: bind
+        source: ./backend.sh
+        target: /app/entrypoint.sh
+    working_dir: /app
+    command: sh ./entrypoint.sh
+    environment: 
+      SERVER_PORT: 3000
+      DB_HOST: ${DB_NAME_DOMINIO}
+      DB_PORT: ${DB_PORT_DOMINIO}
+      DB_USERNAME: ${DB_USERNAME_DOMINIO}
+      DB_PASSWORD: ${DB_PASSWORD_DOMINIO}
+      DB_NAME: ${DB_NAME_DOMINIO}
+      DB_ADMIN_EMAIL: ${DB_ADMIN_EMAIL_DOMINIO}
+    ports:
+      - 3100:3000
+    depends_on:
+      - postgres_dominio
+    networks:
+      - fiap    
+
+  postgres_dominio:
+    container_name: postgres_dominio
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${DB_NAME_DOMINIO}
+      POSTGRES_USER: ${DB_USERNAME_DOMINIO}
+      POSTGRES_PASSWORD: ${DB_PASSWORD_DOMINIO}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5431:5432"
+    networks:
+      - fiap
+    restart: unless-stopped    
+
 networks:
   fiap:
     driver: bridge
 
 volumes:
     postgres_order:
+    postgres:

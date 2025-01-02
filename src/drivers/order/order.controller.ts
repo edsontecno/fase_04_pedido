@@ -37,8 +37,8 @@ import { Public } from '../../system/decorator/public';
 })
 @ApiInternalServerErrorResponse({ description: 'Erro do servidor' })
 @Controller('orders')
-@ApiBearerAuth('user')
-@UseGuards(AuthGuard)
+// @ApiBearerAuth('user')
+// @UseGuards(AuthGuard)
 export class OrderController {
   constructor(private readonly adapter: OrderAdapterController) {}
 
