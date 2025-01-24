@@ -10,6 +10,7 @@ import { OrderItem } from '../entities/OrderItems';
 import { decryptObject } from '../../../application/utils/crypto';
 import { ConfigService } from '@nestjs/config';
 import { ProductUseCase } from '../../../application/product/ProductUseCase';
+import axios from 'axios';
 
 @Injectable()
 export class OrderUseCase implements IOrderUseCase {
@@ -106,40 +107,48 @@ export class OrderUseCase implements IOrderUseCase {
   }
 
   async processPayment(orderProcess: OrderProcess) {
-    console.log('Processando pagamento....');
-    return await this.awaitPayment(orderProcess.total);
+    const body = {
+      amount: orderProcess.total,
+      clientEmail: orderProcess.customerId,
+    };
+
+    const response = await axios.post(
+      `${this.configService.get('URL_PAGAMENTO')}/payment`,
+      body,
+    );
+    return response.data.id;
   }
 
-  async awaitPayment(orderAmount: number) {
-    // const client = new MercadoPagoConfig({
-    //   accessToken: this.configService.get<string>('ACCESS_TOKEN_MP'),
-    // });
-    // const payment = new Payment(client);
-    // const body = {
-    //   transaction_amount: orderAmount,
-    //   description: 'Compra no PIX',
-    //   payment_method_id: 'pix',
-    //   notification_url: this.configService.get<string>('WEBHOOK_MP'),
-    //   payer: {
-    //     email: this.configService.get<string>('PAYER_MP'),
-    //   },
-    // };
-    // const {
-    //   point_of_interaction: {
-    //     transaction_data: { qr_code },
-    //   },
-    //   id,
-    // } = await payment.create({ body });
+  // async awaitPayment(orderAmount: number) {
+  // const client = new MercadoPagoConfig({
+  //   accessToken: this.configService.get<string>('ACCESS_TOKEN_MP'),
+  // });
+  // const payment = new Payment(client);
+  // const body = {
+  //   transaction_amount: orderAmount,
+  //   description: 'Compra no PIX',
+  //   payment_method_id: 'pix',
+  //   notification_url: this.configService.get<string>('WEBHOOK_MP'),
+  //   payer: {
+  //     email: this.configService.get<string>('PAYER_MP'),
+  //   },
+  // };
+  // const {
+  //   point_of_interaction: {
+  //     transaction_data: { qr_code },
+  //   },
+  //   id,
+  // } = await payment.create({ body });
 
-    // const paymentEntity = new PaymentEntity();
-    // paymentEntity.amount = orderAmount;
-    // paymentEntity.mp_id = id;
-    // paymentEntity.qrcode = qr_code;
-    // paymentEntity.status = PaymentStatus.Pending;
-    // paymentEntity.descritpion = `Pagamento pedido ${id}`;
+  // const paymentEntity = new PaymentEntity();
+  // paymentEntity.amount = orderAmount;
+  // paymentEntity.mp_id = id;
+  // paymentEntity.qrcode = qr_code;
+  // paymentEntity.status = PaymentStatus.Pending;
+  // paymentEntity.descritpion = `Pagamento pedido ${id}`;
 
-    return '1';
-  }
+  //   return '1';
+  // }
 
   private statusPermitidos = {
     [OrderStatus.Pending]: [OrderStatus.Received, OrderStatus.Canceled],

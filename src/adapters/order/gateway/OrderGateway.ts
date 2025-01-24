@@ -159,11 +159,9 @@ export class OrderGateway implements IOrderData {
 
     if (order) {
       order.status = OrderStatus.Canceled;
-      // order.payment.status = PaymentStatus.Rejected;
 
       if (status === 'approved') {
         order.status = OrderStatus.Received;
-        // order.payment.status = PaymentStatus.Approved;
       }
       await this.repository.save(order);
       return this.convertDataToEntity(order);

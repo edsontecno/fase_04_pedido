@@ -259,4 +259,14 @@ export class OrderController {
     const result = await this.adapter.changeStatus(id, status);
     return response.status(HttpStatus.OK).json(result);
   }
+
+  @Put(':id/updateStatusPayment/:status')
+  async updateStatusPayment(
+    @Param('id') id: string,
+    @Param('status') status: string,
+    @Res() response: Response,
+  ) {
+    const result = await this.adapter.updateStatusPayment(id, status);
+    return response.status(HttpStatus.OK).json(result);
+  }
 }

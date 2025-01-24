@@ -83,6 +83,30 @@ services:
       - fiap
     restart: unless-stopped    
 
+  mongodb:
+    image: mongo
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME_MONGO}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD_MONGO}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - fiap  
+
+  payment:
+    container_name: payment
+    build: ../microservice-payment-fiap-8soat/.
+    environment:
+      DATABASE_URL: ${ENV_DATABASE_URL}
+      MERCADOPAGO_TOKEN: ${ENV_MERCADOPAGO_TOKEN}
+    ports:
+      - "8080:8080"  
+    networks:
+      - fiap  
+
 networks:
   fiap:
     driver: bridge
@@ -90,3 +114,4 @@ networks:
 volumes:
     postgres_order:
     postgres:
+    mongo_data:

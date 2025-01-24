@@ -52,4 +52,12 @@ export class OrderAdapterController {
     const orders = await this.useCase.getOrders();
     return this.presenter.convertArrayEntityToArrayResponseDto(orders);
   }
+
+  async updateStatusPayment(
+    id: string,
+    status: string,
+  ): Promise<ResponseOrderDTO> {
+    const order = await this.useCase.updateStatusPayment(id, status);
+    return this.presenter.convertEntityToResponseDto(order);
+  }
 }
