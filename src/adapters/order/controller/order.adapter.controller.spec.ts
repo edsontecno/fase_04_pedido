@@ -21,6 +21,7 @@ describe('OrderAdapterController', () => {
       getListStatus: jest.fn(),
       getById: jest.fn(),
       getOrders: jest.fn(),
+      updateStatusPayment: jest.fn(),
     };
 
     gatewayMock = {
@@ -216,6 +217,38 @@ describe('OrderAdapterController', () => {
         presenterMock.convertArrayEntityToArrayResponseDto,
       ).toHaveBeenCalledWith(orders);
       expect(result).toEqual(ordersDto);
+    });
+  });
+
+  describe('updateStatusPayment', () => {
+    it('should update the order status and return the response DTO', async () => {
+      const mockOrderEntity = { id: 1, status: 'approved' }; // Simulação de entidade de pedido
+      const mockResponseDto: ResponseOrderDTO = {
+        id: 1,
+        total: 100,
+        status: 'approved',
+        createdAt: '2023-01-01T10:00:00Z',
+        items: [],
+        awaitTime: '',
+        customer: '',
+      };
+
+      (useCaseMock.updateStatusPayment as jest.Mock).mockResolvedValue(
+        mockOrderEntity,
+      );
+      (presenterMock.convertEntityToResponseDto as jest.Mock).mockReturnValue(
+        mockResponseDto,
+      );
+
+      const id = '1';
+      const status = 'approved';
+      const result = await controller.updateStatusPayment(id, status);
+
+      expect(useCaseMock.updateStatusPayment).toHaveBeenCalledWith(id, status);
+      expect(presenterMock.convertEntityToResponseDto).toHaveBeenCalledWith(
+        mockOrderEntity,
+      );
+      expect(result).toEqual(mockResponseDto);
     });
   });
 });
