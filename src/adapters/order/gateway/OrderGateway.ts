@@ -163,6 +163,7 @@ export class OrderGateway implements IOrderData {
       if (status === 'approved') {
         order.status = OrderStatus.Received;
       }
+
       await this.repository.save(order);
       return this.convertDataToEntity(order);
     }

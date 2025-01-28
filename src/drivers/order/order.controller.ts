@@ -260,13 +260,13 @@ export class OrderController {
     return response.status(HttpStatus.OK).json(result);
   }
 
-  @Put(':id/updateStatusPayment/:status')
+  @Put(':payment_id/updateStatusPayment/:status')
   async updateStatusPayment(
-    @Param('id') id: string,
+    @Param('payment_id') payment_id: string,
     @Param('status') status: string,
     @Res() response: Response,
   ) {
-    const result = await this.adapter.updateStatusPayment(id, status);
+    const result = await this.adapter.updateStatusPayment(payment_id, status);
     return response.status(HttpStatus.OK).json(result);
   }
 }

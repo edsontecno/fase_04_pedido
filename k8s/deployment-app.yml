@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: edsontecno/clean-architecture-nestjs-backend:latest  # Imagem do Node.js 
+        image: edsontecno/fiap-pedido:latest  # Imagem do Node.js 
         ports:
         - containerPort: 3000  # Porta exposta pela aplicação
         resources:
           requests:   # Recursos mínimos para cada pod
             memory: "512Mi"
-            cpu: "500m"
+            cpu: "250m"
           limits:     # Limites máximos para cada pod
             memory: "1024Mi"
             cpu: "1"        

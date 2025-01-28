@@ -48,10 +48,11 @@ export class OrderUseCase implements IOrderUseCase {
       );
     }
     await this.prepareItems(order, orderProcess);
-    orderProcess.payment_id = await this.processPayment(orderProcess);
+    const payment = await this.processPayment(orderProcess);
+    orderProcess.payment_id = payment.id;
     const orderSaved = await this.persist.save(orderProcess);
-    // orderSaved.payment_id = payment.payment_id;
-    // orderSaved.qr_code = payment.qr_code;
+    orderSaved.payment_id = payment.id;
+    orderSaved.qr_code = payment.qrCode;
     return orderSaved;
   }
 
@@ -109,14 +110,14 @@ export class OrderUseCase implements IOrderUseCase {
   async processPayment(orderProcess: OrderProcess) {
     const body = {
       amount: orderProcess.total,
-      clientEmail: orderProcess.customerId,
+      clientEmail: orderProcess.customerId || 'teste@teste.com.br',
     };
-
+    console.log(body);
     const response = await axios.post(
       `${this.configService.get('URL_PAGAMENTO')}/payment`,
       body,
     );
-    return response.data.id;
+    return response.data;
   }
 
   // async awaitPayment(orderAmount: number) {
