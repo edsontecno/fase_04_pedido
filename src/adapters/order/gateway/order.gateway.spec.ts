@@ -72,7 +72,7 @@ describe('OrderGateway', () => {
 
       expect(repositoryMock.findOne).toHaveBeenCalledWith({
         where: { id: 1 },
-        relations: ['itemsOrder', 'customer', 'itemsOrder.product'],
+        relations: ['itemsOrder'],
       });
       expect(result.id).toBe(1);
     });
