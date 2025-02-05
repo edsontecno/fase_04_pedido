@@ -78,7 +78,7 @@ jobs:
       - name: Deploy EKS
         run: |
           kubectl delete secret db-credentials --ignore-not-found
-          kubectl create secret generic db-credentials --from-literal=username=${{ secrets.USER_BD}} --from-literal=password=${{ secrets.PASSWORD_DB}} --from-literal=host=${{ secrets.HOST_DB}} --from-literal=dominio=${{ secrets.URL_DOMINIO}}
+          kubectl create secret generic db-credentials --from-literal=username=${{ secrets.USER_BD}} --from-literal=password=${{ secrets.PASSWORD_DB}} --from-literal=host=${{ secrets.HOST_DB}} --from-literal=dominio=${{ secrets.URL_DOMINIO}} --from-literal=pagamento=${{ secrets.URL_PAGAMENTO}}
           kubectl apply -f ./k8s/deployment-app.yml
           kubectl apply -f ./k8s/service-app.yml    
           kubectl apply -f ./k8s/hpa.yml    

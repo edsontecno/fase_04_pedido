@@ -55,3 +55,8 @@ spec:
             secretKeyRef:
               name: db-credentials
               key: dominio  
+        - name: URL_PAGAMENTO
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: pagamento      
