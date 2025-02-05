@@ -80,7 +80,7 @@ export class OrderGateway implements IOrderData {
       where: {
         id,
       },
-      relations: ['itemsOrder', 'customer', 'itemsOrder.product'],
+      relations: ['itemsOrder'],
     });
     if (entity === null) {
       throw new BusinessRuleException('Pedido não localizado');
